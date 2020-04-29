@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duan.mapper.DMeterMapper">
+
+	<resultMap id="BaseResultMap" type="com.duan.domain.DMeter">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="macaddress" jdbcType="VARCHAR"
+			property="macaddress" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="modelid" jdbcType="VARCHAR" property="modelid" />
+		<result column="comid" jdbcType="VARCHAR" property="comid" />
+		<result column="companyid" jdbcType="VARCHAR"
+			property="companyid" />
+		<result column="address" jdbcType="VARCHAR" property="address" />
+		<result column="enable" jdbcType="INTEGER" property="enable" />
+		<result column="parserid" jdbcType="VARCHAR"
+			property="parserid" />
+		<result column="protocolid" jdbcType="VARCHAR"
+			property="protocolid" />
+		<association property="model" column="modelid"
+			select="getModel" />
+		<association property="com" column="comid" select="getCom" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, modelid, macaddress, name, companyid, address, comid,
+		enable,parserid,protocolid
+	</sql>
+	<select id="findPageWithResult" parameterType="String"
+		resultMap="BaseResultMap">
+		select
+		m.id as id, modelid, macaddress, m.name as name, companyid,
+		address, comid, enable,parserid,protocolid
+		from d_meter m
+		INNER JOIN d_model md on
+		m.modelId=md.id
+		INNER JOIN d_com cm on m.comId=cm.id
+		<where>
+			<if test="name != null and name!=''">
+				m.name LIKE #{name}
+			</if>
+			<if test="modelName != null and modelName!=''">
+				AND md.name LIKE #{modelName}
+			</if>
+			<if test="comName != null and comName!=''">
+				AND cm.name LIKE #{comName}
+			</if>
+		</where>
+
+	</select>
+	<select id="getModel" parameterType="String"
+		resultType="com.duan.domain.DModel">
+		SELECT * FROM d_model WHERE id=#{id}
+	</select>
+	<select id="getCom" parameterType="String"
+		resultType="com.duan.domain.DCom">
+		SELECT * FROM d_com WHERE id=#{id}
+	</select>
+	<delete id="deleteCollectFieldByMeterId" parameterType="String">
+		DELETE FROM 
+			d_collect_config 
+		WHERE 
+			meterId = #{meterId}
+	</delete>
+	<insert id="addCollectFieldWithList">
+	    INSERT INTO d_collect_config(id,meterId,fieldId,cycle,factor,unit,data1,data2,protocolId,parseId) VALUES 
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id},#{item.meterid},#{item.fieldid},#{item.cycle},#{item.factor},#{item.unit},#{item.data1},#{item.data2},#{item.protocolid},#{item.parseid})
+		</foreach>
+	</insert>
+	<delete id="deleteBatchByIds">
+		DELETE FROM
+			d_meter
+		WHERE 
+			id 
+		IN
+		<foreach collection="ids" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+</mapper>
