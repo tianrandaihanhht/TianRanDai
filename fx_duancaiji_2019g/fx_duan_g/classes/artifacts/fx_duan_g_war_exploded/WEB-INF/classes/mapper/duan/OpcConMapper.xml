@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duan.mapper.OpcConMapper">
+
+	<resultMap id="BaseResultMap" type="com.duan.domain.OpcConModel">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="itemId" jdbcType="VARCHAR" property="itemId" />
+		<result column="serverIp" jdbcType="VARCHAR"
+			property="serverIp" />
+		<result column="userName" jdbcType="VARCHAR" property="userName" />
+		<result column="passWord" jdbcType="VARCHAR"
+			property="passWord" />
+		<result column="domainName" jdbcType="VARCHAR" property="domainName" />
+		<result column="clsId" jdbcType="VARCHAR" property="clsId" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, itemId, serverIp, userName, passWord, domainName, clsId
+	</sql>
+	<select id="getByName" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from d_opc_coninfo
+		where name = #{name,jdbcType=VARCHAR}
+	</select>
+
+
+	<select id="selectByItemName" parameterType="java.lang.String"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from d_opc_coninfo
+		where itemId = #{itemName,jdbcType=VARCHAR}
+	</select>
+
+	<insert id="addData" parameterType="java.util.List">
+		INSERT INTO d_opc_coninfo(id, itemId, serverIp, userName, passWord, domainName, clsId) VALUES
+		<foreach collection="opcList" item="item" index="index" separator=",">
+			(#{item.id},#{item.itemId},#{item.serverIp},#{item.userName},#{item.passWord},#{item.domainName},#{item.clsId})
+		</foreach>
+	</insert>
+
+	<delete id="deleteBatchByIds">
+    DELETE FROM
+        d_opc_coninfo
+    WHERE
+        id
+    IN
+    <foreach collection="ids" item="id" open="(" separator="," close=")">
+        #{id}
+    </foreach>
+	</delete>
+
+	<select id="findAllOpc"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from d_opc_coninfo
+	</select>
+
+</mapper>

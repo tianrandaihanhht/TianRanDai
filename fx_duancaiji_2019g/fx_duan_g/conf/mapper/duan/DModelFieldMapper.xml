@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duan.mapper.DModelFieldMapper">
+  
+<resultMap id="BaseResultMap" type="com.duan.domain.DModelField">
+  <id column="id" jdbcType="VARCHAR" property="id" />
+  <result column="modelid" jdbcType="VARCHAR" property="modelid" />
+  <result column="fieldid" jdbcType="VARCHAR" property="fieldid" />
+  <result column="remark" jdbcType="VARCHAR" property="remark" />
+  <association property="field" column="fieldid"
+			select="getField" />
+  <association property="model" column="modelid"
+			select="getModel" />
+</resultMap>
+ 
+<sql id="Base_Column_List">
+  id, modelid, fieldid, remark
+</sql>
+<select id="getField" parameterType="String" resultType="com.duan.domain.DField">
+  SELECT *  FROM d_field WHERE id=#{id}
+</select>
+<select id="getModel" parameterType="String" resultType="com.duan.domain.DModel">
+         SELECT *  FROM d_model WHERE id=#{id}
+</select>
+<select id="findPageWithResult" parameterType="String"
+		resultMap="BaseResultMap">
+		select
+		mf.id as id , mf.modelid, mf.fieldid, mf.remark
+		from   d_model_field mf
+		INNER JOIN d_model md on mf.modelId=md.id
+		INNER JOIN d_field f on f.id=mf.fieldId
+		<where>
+			<if test="fieldname != null and fieldname!=''">
+				f.name LIKE #{fieldname}
+			</if>
+			<if test="modelname != null and modelname!=''">
+				AND md.name LIKE #{modelname}
+			</if>		 
+		</where>
+	</select>
+
+<delete id="deleteBatchByIds">
+		DELETE FROM d_model_field
+		WHERE id
+		IN
+		<foreach collection="ids" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+</delete>
+</mapper>
