@@ -1,7 +1,0 @@
-eclipse.preferences.version=1
-encoding//conf/log4j.properties=UTF-8
-encoding//conf/spring-mybatis.xml=UTF-8
-encoding//src/com/test/controller/UserController.java=UTF-8
-encoding//src/com/test/service/UserService.java=UTF-8
-encoding//src/com/test/service/impl/UserServiceImpl.java=UTF-8
-encoding/<project>=UTF-8
