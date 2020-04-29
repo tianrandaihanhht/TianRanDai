@@ -77,7 +77,7 @@
         }
         function forBranch(list) {
             for (var i = 0; i < list.length; i++) {
-                //第一层
+                //第一层目录
 				treelist.push({id: i, pId: "$", name: list[i].name});
                if((list[i].leaves).length > 0){
                     for(var j = 0; j < list[i].leaves.length; j++){
